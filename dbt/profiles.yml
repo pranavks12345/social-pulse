@@ -1,0 +1,10 @@
+social_pulse:
+  target: dev
+  outputs:
+    dev:
+      type: sqlite
+      threads: 1
+      database: social_pulse
+      schema: main
+      schemas_and_paths:
+        main: ../social_pulse.db

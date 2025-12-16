@@ -1,0 +1,42 @@
+version: 2
+
+sources:
+  - name: social_pulse
+    description: Raw social media data
+    tables:
+      - name: posts
+        description: Raw posts from Reddit and HackerNews
+
+models:
+  - name: stg_posts
+    description: Cleaned and standardized posts
+    columns:
+      - name: id
+        description: Primary key
+      - name: external_id
+        description: Original ID from source
+      - name: source
+        description: Data source (reddit, hackernews)
+      - name: sentiment_score
+        description: Sentiment score from -1 to 1
+      - name: viral_score
+        description: Predicted viral potential 0 to 1
+
+  - name: int_post_metrics
+    description: Posts with calculated metrics
+    columns:
+      - name: engagement_rate
+        description: Comments per score point
+      - name: velocity
+        description: Score per hour
+      - name: is_high_performer
+        description: Flag for high performing posts
+
+  - name: mart_daily_trends
+    description: Daily aggregated trends by source
+    
+  - name: mart_hourly_sentiment
+    description: Hourly sentiment tracking
+    
+  - name: mart_top_posts
+    description: Top performing posts with rankings

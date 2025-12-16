@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m spacy download en_core_web_sm
+
+# Copy source
+COPY kafka/ ./kafka/
+COPY nlp/ ./nlp/
+COPY database/ ./database/
+
+# Run consumer/processor
+CMD ["python", "-m", "kafka.consumer"]

@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+*.db
+venv/
+.venv/
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+.streamlit/
+.prefect/
