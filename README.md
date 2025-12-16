@@ -2,57 +2,7 @@
 
 Production-grade real-time social media analytics pipeline.
 
-## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              DATA SOURCES                                    │
-│                      Reddit │ HackerNews │ (expandable)                     │
-└─────────────────────────────────┬───────────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         STREAMING SCRAPERS                                   │
-│                    Async Python │ Rate Limiting │ Continuous                │
-└─────────────────────────────────┬───────────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              KAFKA                                           │
-│              Topics: raw.posts │ processed.posts │ trending │ alerts        │
-└─────────────────────────────────┬───────────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         STREAM PROCESSOR                                     │
-│                   NLP Pipeline │ Sentiment │ Topics │ Viral Prediction      │
-└─────────────────────────────────┬───────────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                            POSTGRESQL                                        │
-│                     Posts │ Trends │ Entities │ Snapshots                   │
-└─────────────────────────────────┬───────────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              dbt                                             │
-│              staging → intermediate → marts (daily, hourly, top)            │
-└─────────────────────────────────┬───────────────────────────────────────────┘
-                                  │
-                    ┌─────────────┴─────────────┐
-                    ▼                           ▼
-┌─────────────────────────────┐   ┌─────────────────────────────┐
-│      STREAMLIT DASHBOARD    │   │       FASTAPI + WEBSOCKET   │
-│   Charts │ Trends │ Viral   │   │   REST API │ Real-time WS   │
-└─────────────────────────────┘   └─────────────────────────────┘
-                                              │
-                                              ▼
-                              ┌─────────────────────────────┐
-                              │    PROMETHEUS + GRAFANA     │
-                              │        Monitoring           │
-                              └─────────────────────────────┘
-```
 
 ## Features
 
@@ -67,7 +17,7 @@ Production-grade real-time social media analytics pipeline.
 
 ## Quick Start
 
-### Option 1: Docker (Recommended)
+### Option 1: Docker 
 
 ```bash
 # Start everything
@@ -96,59 +46,6 @@ python scripts/setup.py
 # Run dashboard
 python scripts/run.py
 ```
-
-## Project Structure
-
-```
-social-pulse/
-├── scrapers/
-│   ├── reddit.py           # Async Reddit scraper
-│   ├── hackernews.py       # HackerNews API client
-│   └── streaming.py        # Continuous scraper → Kafka
-├── kafka/
-│   ├── producer.py         # Kafka producer client
-│   └── consumer.py         # Stream processor
-├── nlp/
-│   └── pipeline.py         # Sentiment, topics, viral prediction
-├── database/
-│   ├── models.py           # SQLAlchemy ORM
-│   └── init.sql            # PostgreSQL init script
-├── dbt/
-│   └── models/             # dbt transformations
-│       ├── staging/
-│       ├── intermediate/
-│       └── marts/
-├── api/
-│   └── server.py           # FastAPI + WebSocket
-├── dashboard/
-│   └── app.py              # Streamlit dashboard
-├── monitoring/
-│   ├── prometheus.yml
-│   └── grafana/
-├── docker/
-│   ├── Dockerfile.scraper
-│   ├── Dockerfile.processor
-│   ├── Dockerfile.api
-│   └── Dockerfile.dashboard
-├── infra/
-│   └── main.tf             # Terraform for AWS
-├── docker-compose.yml
-└── requirements.txt
-```
-
-## API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/posts` | GET | Get posts with filters |
-| `/trending` | GET | Trending topics |
-| `/stats` | GET | Overall statistics |
-| `/search` | GET | Search posts by keyword |
-| `/viral` | GET | High viral score posts |
-| `/sentiment/timeline` | GET | Sentiment over time |
-| `/ws` | WebSocket | Real-time updates |
-
-## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
